@@ -74,11 +74,11 @@ def main(argv):
 
             phaseSound(current_phase, main_channel)
 
-        if !prev_formatted["player1"]["joined"] and req_formatted["player1"]["joined"]:
+        if not prev_formatted["player1"]["joined"] and req_formatted["player1"]["joined"]:
             # Player 1 has joined
             player1Sound(supp_channel)
 
-        if !prev_formatted["player2"]["joined"] and req_formatted["player2"]["joined"]:
+        if not prev_formatted["player2"]["joined"] and req_formatted["player2"]["joined"]:
             # Player 2 has joined
             player2Sound(supp_channel)
 
