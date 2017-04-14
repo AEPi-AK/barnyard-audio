@@ -16,10 +16,11 @@ import urllib2
 # Channel 2 -> Dialogue
 #           -> Player joining
 
-addr = "http://localhost:3000"
+addr = "http://barnyard-nuc.local"
 
 sound_dir = "sounds/"
-example = mixer.Sound(sound_dir + 'example.mp3')
+mixer.init()
+example = mixer.Sound(sound_dir + 'example.wav')
 
 sound_dict = dict(GameJoining = example, \
               GameInstructions = example, \
@@ -32,27 +33,36 @@ sound_dict = dict(GameJoining = example, \
 
 def phaseSound(phase, channel):
     if phase == "Desert":
+	print("desert")
         #channel.play(SOUND, loops=-1, fade_ms=500)
-    elif phase == "Tundra":
+    elif phase == "Artic":
+	print("tundra")
         #channel.play(SOUND, loops=-1, fade_ms=500)
+    elif phase == "Rainforest":
+	print("rainforest")
+	#channel.play(SOUND, loops=-1, fade_ms=500)
+    elif phase == "Grassland":
+	print("grassland")
+	#channel.play(SOUND, loops=-1, fade_ms=500)
     elif phase == "WinnerPlayer1":
+	print("winner1")
         #channel.play(SOUND, loops=-1, fade_ms=500)
     elif phase == "WinnerPlayer2":
+	print("winner2")
         #channel.play(SOUND, loops=-1, fade_ms=500)
     else:
-        channel.play(sound_dict[phase])
+    	channel.play(sound_dict[phase])
 
-def player1Sound(channel):
+#def player1Sound(channel):
     #channel.play(SOUND, loops=-1, fade_ms=500)
 
-def player2Sound(channel):
+#def player2Sound(channel):
     #channel.play(SOUND, loops=-1, fade_ms=500)
 
 
-def main(argv):
+def main():
     # Set up sounds
     volume = 0.5
-    mixer.init()
     main_channel = mixer.Channel(0)
     supp_channel = mixer.Channel(1)
 
@@ -64,22 +74,23 @@ def main(argv):
         + 'r":"Player1"}')
 
     while True:
-        req_raw = urllib2.urlopen(addr + "/gamestate")
+        req_raw = urllib2.urlopen(addr + "/gamestate").read()
         req_formatted = json.loads(req_raw)
 
         prev_vol = volume
         volume = (req_formatted["settings"]["volume"]/100.0)
-        if volume != prev_volume:
+        if volume != prev_vol:
             main_channel.set_volume(volume)
             supp_channel.set_volume(volume)
 
         if req_formatted["currentPhase"] != prev_formatted["currentPhase"] or \
-                req_formatted["location"] != prev_formatted["location"] :
+                (req_formatted["currentPhase"] == "GameInProgress" and \
+		req_formatted["location"] != prev_formatted["location"]) :
             # Phase Change, play appropriate sound
             current_phase = req_formatted["currentPhase"]
             if current_phase == "GameInProgress":
                 current_phase = req_formatted["location"]
-            elif current_phase = "GameOver":
+            elif current_phase == "GameOver":
                 current_phase = "Winner" + req_formatted["winner"]
 
             phaseSound(current_phase, main_channel)
@@ -96,4 +107,4 @@ def main(argv):
         sleep(0.05)
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    main()
