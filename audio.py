@@ -18,12 +18,20 @@ import urllib2
 
 addr = "http://localhost:3000"
 
+sound_dir = "sounds/"
+example = mixer.Sound(sound_dir + 'example.mp3')
+
+sound_dict = dict(GameJoining = example, \
+              GameInstructions = example, \
+              GameBiomeSelection = example, \
+              GameInProgress = example, \
+              GameTimeUp = example, \
+              GameScoring = example, \
+              GameWinner = example, \
+              GameWaiting = example)
+
 def phaseSound(phase, channel):
-    if phase == "GameWaiting":
-        #channel.play(SOUND, loops=-1, fade_ms=500)
-    elif phase == "GameJoining":
-        #channel.play(SOUND, loops=-1, fade_ms=500)
-    elif phase == "Desert":
+    if phase == "Desert":
         #channel.play(SOUND, loops=-1, fade_ms=500)
     elif phase == "Tundra":
         #channel.play(SOUND, loops=-1, fade_ms=500)
@@ -31,6 +39,8 @@ def phaseSound(phase, channel):
         #channel.play(SOUND, loops=-1, fade_ms=500)
     elif phase == "WinnerPlayer2":
         #channel.play(SOUND, loops=-1, fade_ms=500)
+    else:
+        channel.play(sound_dict[phase])
 
 def player1Sound(channel):
     #channel.play(SOUND, loops=-1, fade_ms=500)
