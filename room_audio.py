@@ -1,12 +1,13 @@
 import RPi.GPIO as GPIO
 import time
 from pygame import mixer
+import sys
 
-sound_dir = "sounds/"
+sound_dir = "/home/pi/Developer/barnyard-audio/sounds/"
 mixer.init()
-example = mixer.Sound(sound_dir + 'room_0.wav')
 
-def main():
+def main(room_num):
+    room_audio = mixer.Sound(sound_dir + 'Room_'+room_num+'.wav')
     GPIO.setmode(GPIO.BOARD)
     GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
@@ -16,8 +17,7 @@ def main():
         time.sleep(0.05)
 
         if GPIO.input(22) and not main_channel.get_busy():
-            print("playing audio?")
-    	    main_channel.play(example) 
+    	    main_channel.play(room_audio) 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1])
